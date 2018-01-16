@@ -26,18 +26,20 @@ describe('fetch', () => {
     // Setup
     let gitdir = await copyFixtureIntoTempDir(__dirname, 'test-fetch.git')
     let output = []
+    let progress = []
     // Test
     let repo = { fs, gitdir }
     await fetch({
       ...repo,
       depth: 1,
       remote: 'origin',
-      onprogress: output.push.bind(output),
       ref: 'test-branch-shallow-clone'
     })
+      .on('message', output.push.bind(output))
+      .on('progress', progress.push.bind(progress))
     expect(await fs.exists(`${gitdir}/shallow`)).toBe(true)
-    // TODO: Bring back some kind of progress monitoring.
-    // expect(output).toMatchSnapshot()
+    expect(output).toMatchSnapshot()
+    expect(progress).toMatchSnapshot()
     let shallow = await fs.read(`${gitdir}/shallow`, { encoding: 'utf8' })
     expect(shallow === '92e7b4123fbf135f5ffa9b6fe2ec78d07bbc353e\n').toBe(true)
     // Now test deepen

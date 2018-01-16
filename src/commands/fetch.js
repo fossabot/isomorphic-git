@@ -8,6 +8,8 @@ import applyDelta from 'git-apply-delta'
 import marky from 'marky'
 import pify from 'pify'
 import concat from 'simple-concat'
+import EventEmittingPromise from 'event-emitting-promise'
+import split2 from 'split2'
 import { config } from './config'
 import {
   GitRemoteHTTP,
@@ -47,7 +49,7 @@ import { pkg, log } from '../utils'
  * })
  * console.log('done')
  */
-export async function fetch ({
+export function fetch ({
   dir,
   gitdir = path.join(dir, '.git'),
   fs: _fs,
@@ -60,30 +62,52 @@ export async function fetch ({
   since,
   exclude,
   relative,
-  tags,
-  onprogress
+  tags
 }) {
   const fs = new FileSystem(_fs)
-  let response = await fetchPackfile({
-    gitdir,
-    fs,
-    ref,
-    remote,
-    url,
-    authUsername,
-    authPassword,
-    depth,
-    since,
-    exclude,
-    relative,
-    tags
+  return new EventEmittingPromise(async (resolve, reject, emit) => {
+    try {
+      let response = await fetchPackfile({
+        gitdir,
+        fs,
+        ref,
+        remote,
+        url,
+        authUsername,
+        authPassword,
+        depth,
+        since,
+        exclude,
+        relative,
+        tags
+      })
+      // Note: progress messages are designed to be written directly to the terminal,
+      // so they are often sent with just a carriage return to overwrite the last line of output.
+      // But there are also messages delimited with newlines.
+      // I also include CRLF just in case.
+      response.progress.pipe(split2(/(\r\n)|\r|\n/)).on('data', line => {
+        // onprogress(line.trim())
+        emit('message', line.trim())
+        let matches = line.match(/\((\d+?)\/(\d+?)\)/)
+        if (matches) {
+          emit('progress', {
+            loaded: parseInt(matches[1], 10),
+            total: parseInt(matches[2], 10),
+            lengthComputable: true
+          })
+        }
+      })
+      let packfile = await pify(concat)(response.packfile)
+      let packfileSha = packfile.slice(-20).toString('hex')
+      await fs.write(
+        path.join(gitdir, `objects/pack/pack-${packfileSha}.pack`),
+        packfile
+      )
+      resolve()
+    } catch (err) {
+      reject(err)
+    }
   })
-  let packfile = await pify(concat)(response.packfile)
-  let packfileSha = packfile.slice(-20).toString('hex')
-  await fs.write(
-    path.join(gitdir, `objects/pack/pack-${packfileSha}.pack`),
-    packfile
-  )
 }
 
 async function fetchPackfile ({
@@ -250,7 +274,7 @@ export async function unpack ({
   onprogress
 }) {
   const fs = new FileSystem(_fs)
-  return new Promise(function (resolve, reject) {
+  return new EventEmittingPromise(function (resolve, reject, emit) {
     // Read header
     peek(inputStream, 12, (err, data, inputStream) => {
       if (err) return reject(err)
@@ -266,6 +290,11 @@ export async function unpack ({
       let numObjects = data.readInt32BE(8)
       if (onprogress !== undefined) {
         onprogress({ loaded: 0, total: numObjects, lengthComputable: true })
+        emit('progress', {
+          loaded: 0,
+          total: numObjects,
+          lengthComputable: true
+        })
       }
       if (numObjects === 0) return resolve()
       // And on our merry way
@@ -346,6 +375,11 @@ export async function unpack ({
               }
               if (onprogress !== undefined) {
                 onprogress({
+                  loaded: numObjects - num,
+                  total: numObjects,
+                  lengthComputable: true
+                })
+                emit('progress', {
                   loaded: numObjects - num,
                   total: numObjects,
                   lengthComputable: true
