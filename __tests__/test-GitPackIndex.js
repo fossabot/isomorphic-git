@@ -1,6 +1,7 @@
 /* globals describe test expect */
-import { FileSystem, GitPackIndex, GitObject } from '../dist/for-node/models'
 import _fs from 'fs'
+import { models } from '../dist/for-node/internal-apis'
+const { FileSystem, GitPackIndex, GitObject } = models
 const fs = new FileSystem(_fs)
 
 jest.setTimeout(10000)

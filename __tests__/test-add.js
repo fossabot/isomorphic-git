@@ -1,7 +1,7 @@
 /* globals describe test expect */
 import fs from 'fs'
 import { copyFixtureIntoTempDir } from 'jest-fixtures'
-import { init, add, listFiles } from '../dist/for-node/commands'
+import { init, add, listFiles } from '..'
 
 /** @test {add} */
 describe('add', () => {

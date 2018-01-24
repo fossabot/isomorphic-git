@@ -1,8 +1,8 @@
 /* globals describe test expect */
-import { createTempDir, copyFixtureIntoTempDir } from 'jest-fixtures'
 import fs from 'fs'
+import { createTempDir, copyFixtureIntoTempDir } from 'jest-fixtures'
 import pify from 'pify'
-import { checkout, listFiles } from '../dist/for-node/commands'
+import { checkout, listFiles } from '..'
 
 /** @test {checkout} */
 describe('checkout', () => {
