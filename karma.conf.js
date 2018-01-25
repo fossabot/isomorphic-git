@@ -9,9 +9,9 @@ module.exports = function (config) {
     frameworks: ['browserify', 'tap'],
     // list of files / patterns to load in the browser
     files: [
-      'testling/*.js',
+      '__tests__/*.tape.js',
       {
-        pattern: '__tests__/__fixtures__',
+        pattern: '__tests__/__fixtures__/**/*',
         served: true,
         watched: false,
         included: false
@@ -22,7 +22,7 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'testling/*.js': ['browserify']
+      '__tests__/*.tape.js': ['browserify']
     },
     // test results reporter to use
     // possible values: 'dots', 'progress'

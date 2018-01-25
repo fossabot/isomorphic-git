@@ -132,9 +132,7 @@
     ]
   },
   "jest": {
-    "testPathIgnorePatterns": [
-      "__helpers__"
-    ],
+    "testRegex": "/__tests__/test-(?!.*\\.tape\\.js).*\\.js",
     "testEnvironment": "node"
   }
 }

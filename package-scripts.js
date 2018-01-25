@@ -16,13 +16,21 @@ module.exports = {
     build: {
       default: series.nps('build.rollup', 'build.browserify'),
       rollup: 'rollup -c',
-      browserify: concurrent.nps('build.sw', 'build.umd'),
+      browserify: concurrent.nps('build.sw', 'build.umd', 'build.internalApis'),
       discify: `browserify \
             --entry dist/for-browserify/index.js \
             --standalone git \
             --fullpaths | uglifyjs \
                           --compress \
                           --mangle | discify -O`,
+      internalApis: `browserify \
+            --entry dist/for-browserify/internal-apis.js \
+            --standalone internal \
+            --debug | uglifyjs \
+                      --compress \
+                      --mangle \
+                      --source-map "content=inline,url=internal.umd.min.js.map" \
+                      -o dist/internal.umd.min.js`,
       umd: `browserify \
             --entry dist/for-browserify/index.js \
             --standalone git \
