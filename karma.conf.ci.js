@@ -36,27 +36,23 @@ const customLaunchers = {
   }
 }
 
-module.exports = Object.assign(
-  {},
-  base,
-  {
-    sauceLabs: {
-      testName: 'isomorphic-git'
-    },
-    customLaunchers: customLaunchers,
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: Object.keys(customLaunchers),
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['dots', 'saucelabs'],
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true,
-    // https://support.saucelabs.com/hc/en-us/articles/225104707-Karma-Tests-Disconnect-Particularly-When-Running-Tests-on-Safari
-    browserDisconnectTimeout: 10000, // default 2000
-    browserDisconnectTolerance: 1, // default 0
-    captureTimeout: 4 * 60 * 1000 // default 60000
-  }
-)
+module.exports = Object.assign({}, base, {
+  sauceLabs: {
+    testName: 'isomorphic-git'
+  },
+  customLaunchers: customLaunchers,
+  // start these browsers
+  // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+  browsers: Object.keys(customLaunchers),
+  // test results reporter to use
+  // possible values: 'dots', 'progress'
+  // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+  reporters: ['dots', 'saucelabs'],
+  // Continuous Integration mode
+  // if true, Karma captures browsers, runs the tests and exits
+  singleRun: true,
+  // https://support.saucelabs.com/hc/en-us/articles/225104707-Karma-Tests-Disconnect-Particularly-When-Running-Tests-on-Safari
+  browserDisconnectTimeout: 10000, // default 2000
+  browserDisconnectTolerance: 1, // default 0
+  captureTimeout: 4 * 60 * 1000 // default 60000
+})

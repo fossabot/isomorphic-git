@@ -1,7 +1,7 @@
 const path = require('path')
 const _fs = require('fs')
 const pify = require('pify')
-const BrowserFS = require('browserfs')
+const BrowserFS = require('../../dist/browserfs.min.js')
 const index = require('../__fixtures__/index.json')
 
 const HTTPRequestFS = pify(BrowserFS.FileSystem.HTTPRequest.Create)
