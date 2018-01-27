@@ -1,5 +1,5 @@
 /* globals describe it expect */
-const { FixtureFS } = require('./__helpers__/FixtureFS.js')
+const { makeFixture } = require('./__helpers__/FixtureFS.js')
 
 const { init, add, listFiles } = require('..')
 
@@ -7,8 +7,7 @@ const { init, add, listFiles } = require('..')
 describe('add', () => {
   it('file', async () => {
     // Setup
-    let fs = await FixtureFS
-    let dir = 'test-add'
+    let { fs, dir, gitdir } = await makeFixture('test-add')
     // Test
     await init({ fs, dir })
     let orig = (await listFiles({ fs, dir })).length

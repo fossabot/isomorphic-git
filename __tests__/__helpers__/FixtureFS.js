@@ -18,8 +18,42 @@ const FixtureFS = async function () {
   let writable = await InMemoryFS()
   let ofs = await OverlayFS({ readable, writable })
   BrowserFS.initialize(ofs)
-  return BrowserFS.BFSRequire('fs')
+  const fs = BrowserFS.BFSRequire('fs')
+  return {
+    fs,
+    writable,
+    readable
+  }
 }
 
 const FixturePromise = FixtureFS()
+
+async function makeFixture (dir) {
+  return process.browser ? makeBrowserFixture(dir) : makeNodeFixture(dir)
+}
+
+async function makeBrowserFixture (dir) {
+  const { fs, writable, readable } = await FixturePromise
+  writable.empty()
+  let gitdir = `${dir}.git`
+  return { fs, dir, gitdir }
+}
+
+async function makeNodeFixture (fixture) {
+  const {
+    getFixturePath,
+    createTempDir,
+    copyFixtureIntoTempDir
+  } = require('jest-fixtures')
+  let testsDir = path.resolve(__dirname, '..')
+  let dir = (await getFixturePath(testsDir, fixture))
+    ? await copyFixtureIntoTempDir(testsDir, fixture)
+    : await createTempDir()
+  let gitdir = (await getFixturePath(testsDir, `${fixture}.git`))
+    ? await copyFixtureIntoTempDir(testsDir, `${fixture}.git`)
+    : await createTempDir()
+  return { fs: _fs, dir, gitdir }
+}
+
 module.exports.FixtureFS = FixturePromise
+module.exports.makeFixture = makeFixture

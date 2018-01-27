@@ -1,13 +1,13 @@
 /* globals describe it expect */
 localStorage.debug = 'isomorphic-git'
-const { FixtureFS } = require('./__helpers__/FixtureFS.js')
+const { makeFixture } = require('./__helpers__/FixtureFS.js')
 const pify = require('pify')
 
 const { init, add, commit } = require('..')
 
 describe('basic test', () => {
   it('does not explode', async () => {
-    const fs = await FixtureFS
+    let { fs, dir, gitdir } = await makeFixture('test-basic')
     console.log('Loaded fs')
     await init({ fs: fs, dir: '.' })
     console.log('init')
