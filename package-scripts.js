@@ -11,7 +11,8 @@ module.exports = {
     watch: {
       default: concurrent.nps('watch.rollup', 'watch.jest'),
       rollup: runInNewWindow('rollup -cw'),
-      jest: runInNewWindow('cross-env DEBUG=isomorphic-git jest --watch')
+      jest: runInNewWindow('cross-env DEBUG=isomorphic-git jest --watch'),
+      karma: runInNewWindow('karma start')
     },
     build: {
       default: series.nps('build.rollup', 'build.browserify'),
@@ -55,7 +56,9 @@ module.exports = {
       jest: process.env.CI
         ? 'cross-env DEBUG=isomorphic-git jest --coverage && codecov'
         : 'cross-env DEBUG=isomorphic-git jest',
-      karma: 'karma start --single-run'
+      karma: process.env.CI
+        ? 'karma start'
+        : 'karma start --browsers ChromeHeadless --single-run'
     }
   }
 }

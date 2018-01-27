@@ -1,20 +1,20 @@
+/* globals describe it expect */
 localStorage.debug = 'isomorphic-git'
-const { init, add, commit } = require('..')
-const test = require('tape')
 const { FixtureFS } = require('./__helpers__/FixtureFS.js')
+const pify = require('pify')
 
-test('things do not explode', async t => {
-  try {
-    t.plan(5)
+const { init, add, commit } = require('..')
+
+describe('basic test', () => {
+  it('does not explode', async () => {
     const fs = await FixtureFS
-    t.ok(fs, 'Loaded fs')
-
+    console.log('Loaded fs')
     await init({ fs: fs, dir: '.' })
-    t.pass('init')
+    console.log('init')
 
     fs.writeFileSync('a.txt', 'Hello', 'utf8')
     await add({ fs: fs, dir: '.', filepath: 'a.txt' })
-    t.pass('add a.txt')
+    console.log('add a.txt')
 
     let oid = await commit({
       fs: fs,
@@ -26,14 +26,9 @@ test('things do not explode', async t => {
       },
       message: 'Initial commit'
     })
-    t.pass('commit')
+    console.log('commit')
 
-    t.equal(
-      oid,
-      '066daf8b7c79dca893d91ce0577dfab5ace80dbc',
-      "- oid is '066daf8b7c79dca893d91ce0577dfab5ace80dbc'"
-    )
-  } catch (err) {
-    t.fail(err)
-  }
+    expect(oid).toEqual('066daf8b7c79dca893d91ce0577dfab5ace80dbc')
+    console.log('checked oid')
+  })
 })
