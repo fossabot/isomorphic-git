@@ -38,6 +38,8 @@ async function makeBrowserFixture (dir) {
   const { fs, writable, readable } = await FixturePromise
   writable.empty()
   let gitdir = `${dir}.git`
+  if (!fs.existsSync(dir)) await pify(fs.mkdir)(dir)
+  if (!fs.existsSync(gitdir)) await pify(fs.mkdir)(gitdir)
   return { fs, dir, gitdir }
 }
 

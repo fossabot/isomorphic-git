@@ -14,7 +14,6 @@ describe('checkout', () => {
   it('checkout', async () => {
     // Setup
     let { fs, dir, gitdir } = await makeFixture('test-checkout')
-    await fs.mkdir(dir)
     await checkout({ fs, dir, gitdir, ref: 'test-branch' })
     let files = await pify(fs.readdir)(dir)
     expectjs(files.sort()).toMatchSnapshot()
