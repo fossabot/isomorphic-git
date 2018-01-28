@@ -1,6 +1,5 @@
 // Karma configuration
 const base = require('./karma.conf.base')
-process.env.CHROME_BIN = require('puppeteer').executablePath()
 
 module.exports = Object.assign({}, base, {
   // test results reporter to use

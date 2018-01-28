@@ -5,7 +5,7 @@ const { concurrent, series, runInNewWindow } = require('nps-utils')
 module.exports = {
   scripts: {
     format:
-      'prettier-standard src/**/*.js __tests__/**/*.js testling/**/*.js *.js',
+      'prettier-standard src/**/*.js __tests__/**/*.js',
     lint: 'standard src/**/*.js',
     toc: 'doctoc --maxlevel=2 README.md',
     watch: {

@@ -10,7 +10,7 @@ describe('clone', () => {
   ;(process.env.CI ? it : xit)('clone', async () => {
     let { fs, dir, gitdir } = await makeFixture('isomorphic-git')
     await clone({
-      fs: fs,
+      fs,
       dir,
       gitdir,
       depth: 1,
@@ -20,8 +20,8 @@ describe('clone', () => {
     })
     console.log('clone')
     expect(fs.existsSync(`${dir}`)).toBe(true)
-    expect(fs.existsSync(`${dir}/.git/objects`)).toBe(true)
-    expect(fs.existsSync(`${dir}/.git/refs/remotes/origin/master`)).toBe(true)
+    expect(fs.existsSync(`${gitdir}/objects`)).toBe(true)
+    expect(fs.existsSync(`${gitdir}/refs/remotes/origin/master`)).toBe(true)
     expect(fs.existsSync(`${dir}/package.json`)).toBe(true)
   })
 })
