@@ -135,6 +135,6 @@
   "jest": {
     "testRegex": "/__tests__/test-(?!.*\\.(spec|snap)\\.js).*\\.js",
     "testEnvironment": "node",
-    "coveragePathIgnorePatterns": ["<rootDir>/__tests__/", "<rootDir>/dist/browserfs", "internal-apis.js"]
+    "collectCoverageFrom": ["<rootDir>/dist/for-node"]
   }
 }
