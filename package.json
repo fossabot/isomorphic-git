@@ -134,7 +134,6 @@
   },
   "jest": {
     "testRegex": "/__tests__/test-(?!.*\\.(spec|snap)\\.js).*\\.js",
-    "testEnvironment": "node",
-    "collectCoverageFrom": ["<rootDir>/dist/for-node"]
+    "testEnvironment": "node"
   }
 }
